@@ -22,6 +22,10 @@ class UserViewSet(viewsets.ModelViewSet):
 
     search_fields = ['email', 'first_name', 'last_name']
 
+    def get_queryset(self):
+        queryset = self.queryset.exclude(id=self.request.user.id)
+        return queryset
+
 
 class FriendRequestViewSet(viewsets.ModelViewSet):
     """
