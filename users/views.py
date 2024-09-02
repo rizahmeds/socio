@@ -5,6 +5,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework import status
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
+from rest_framework import filters
 
 from users.models import FriendRequest, UserProfile, Friendship
 from users.serializers import FriendshipSerializer, UserSerializer, FriendRequestSerializer
@@ -12,14 +13,15 @@ from users.throttling import FriendRequestRateThrottle
 
 
 class UserViewSet(viewsets.ModelViewSet):
-
-
     """
     API endpoint that allows users to be viewed or edited.
     """
     queryset = UserProfile.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [filters.SearchFilter]
+
+    search_fields = ['email', 'first_name', 'last_name']
 
 
 class FriendRequestViewSet(viewsets.ModelViewSet):
