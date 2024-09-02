@@ -14,36 +14,38 @@ class UserProfileFactory(DjangoModelFactory):
     class Meta:
         model = UserProfile
 
-    username = factory.Sequence(lambda n: f'user_{n}')
-    email = factory.LazyAttribute(lambda obj: f'{obj.username}@example.com')
+    email = factory.Sequence(lambda n: f'user{n}@example.com')
     first_name = Faker('first_name')
     last_name = Faker('last_name')
-    is_active = True
-    is_staff = False
-    date_joined = Faker('date_time_this_decade', tzinfo=None)
-    
-    # Custom fields we added to the User model
     bio = Faker('paragraph', nb_sentences=3)
     birth_date = Faker('date_of_birth', minimum_age=18, maximum_age=80)
-
-    @factory.post_generation
-    def set_password(self, create, extracted, **kwargs):
-        self.set_password(extracted if extracted else 'password123')
-
-    @factory.post_generation
-    def friends(self, create, extracted, **kwargs):
-        if not create:
-            return
-
-        if extracted:
-            for friend in extracted:
-                self.friends.add(friend)
+    is_active = True
+    is_staff = False
+    date_joined = LazyAttribute(lambda o: timezone.now())
 
     @classmethod
     def _create(cls, model_class, *args, **kwargs):
-        """Override the default _create to use create_user for correct password hashing"""
+        """Override the default _create to use create_user for correct user creation"""
         manager = cls._get_manager(model_class)
-        return manager.create_user(*args, **kwargs)
+        
+        # Extract email and password from kwargs
+        email = kwargs.pop('email', None)
+        password = kwargs.pop('password', 'password123')  # Default password if not provided
+        
+        # If email is not provided, generate one
+        if not email:
+            email = cls.email.evaluate(None, None, extra=kwargs)
+        
+        # Create the user using the custom create_user method
+        return manager.create_user(email=email, password=password, **kwargs)
+
+    @factory.post_generation
+    def set_password(self, create, extracted, **kwargs):
+        """
+        Do not set password here as it's already set in create_user.
+        This method is kept for backwards compatibility with existing tests.
+        """
+        pass
     
 
 class FriendRequestFactory(DjangoModelFactory):

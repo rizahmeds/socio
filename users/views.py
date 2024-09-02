@@ -1,4 +1,3 @@
-from django.shortcuts import get_object_or_404
 from rest_framework import permissions, viewsets
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
@@ -65,10 +64,9 @@ class SignupView(APIView):
 class LoginView(APIView):
     
     def post(self, request):
-        username = request.data.get('username')
+        email = request.data.get('email')
         password = request.data.get('password')
-        user = authenticate(request, username=username, password=password)
-        print("user: ", user, username, password)
+        user = authenticate(request, email=email, password=password)
         if user is not None:
             token, _ = Token.objects.get_or_create(user=user)
             return Response({

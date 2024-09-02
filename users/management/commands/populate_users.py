@@ -1,5 +1,3 @@
-import random
-
 from django.db import transaction
 from django.core.management.base import BaseCommand
 
@@ -21,19 +19,16 @@ class Command(BaseCommand):
         self.stdout.write("Deleting old data...")
         models = [UserProfile, Friendship, FriendRequest]
         for m in models:
-            m.objects.exclude(id=52).delete()
+            if isinstance(m, UserProfile):
+                m.objects.exclude(is_superuser=True).delete()
+            m.objects.exclude().delete()
 
         self.stdout.write("Creating new data...")
         # Create dummy users
         for _ in range(NUM_USERS):
-            # role = random.choice([x[0] for x in CustomUser.Types.choices])
-            user = UserProfileFactory(
-                # role=role
-            )
-        
-        # Add dummy land_loard
-        for user in UserProfile.objects.all():
+            UserProfileFactory()
             FriendshipFactory()
             FriendRequestFactory()
+
 
         

@@ -7,7 +7,7 @@ from users.models import UserProfile, FriendRequest, Friendship
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ["id", "username", "first_name", "last_name", "email", "date_joined", "birth_date"]
+        fields = ["id", "email", "first_name", "last_name", "date_joined", "birth_date"]
         # extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):

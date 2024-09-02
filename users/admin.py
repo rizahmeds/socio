@@ -5,7 +5,7 @@ from users.models import UserProfile, Friendship, FriendRequest
 
 @admin.register(UserProfile)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ("email", "username", "get_full_name", )
+    list_display = ("email", "get_full_name",)
 
 
 @admin.register(Friendship)
