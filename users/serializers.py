@@ -8,6 +8,11 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = ["id", "username", "first_name", "last_name", "email", "date_joined", "birth_date"]
+        # extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        user = UserProfile.objects.create_user(**validated_data)
+        return user
 
 
 class FriendRequestSerializer(serializers.ModelSerializer):
