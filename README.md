@@ -43,7 +43,13 @@ python manage.py populate_users
 python manage.py runserver
 ```
 
-The application should now be running at http://127.0.0.1:8000/.
+The application should now be running at http://127.0.0.1:8000/admin.
+
+# Installation using docker
+
+```
+docker compose up
+```
 
 ## API Endpoints
 
