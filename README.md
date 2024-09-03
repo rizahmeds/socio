@@ -45,8 +45,8 @@ The application should now be running at http://127.0.0.1:8000/.
 
 ## API Endpoints
 
-- /api/register/: Register a new user
-- /api/login/: Log in a user
-- /api/friends/: List friends
-- /api/friend-requests/: List, send, accept, or reject friend requests
+| Command | Description |
+| --- | --- |
+| `git status` | List all *new or modified* files |
+| `git diff` | Show file differences that **haven't been** staged |
 
