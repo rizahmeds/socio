@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from users.models import UserProfile, Friendship, FriendRequest
+from users.models import UserProfile, Friendship
 
 
 @admin.register(UserProfile)
@@ -10,9 +10,4 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(Friendship)
 class FriendshipAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(FriendRequest)
-class FriendRequestAdmin(admin.ModelAdmin):
-    pass
+    list_display = ("user", "friend", "status")

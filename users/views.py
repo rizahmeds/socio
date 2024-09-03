@@ -6,9 +6,10 @@ from rest_framework.response import Response
 from django.contrib.auth import authenticate
 from rest_framework import filters
 
-from users.models import FriendRequest, UserProfile, Friendship
-from users.serializers import FriendshipSerializer, UserSerializer, FriendRequestSerializer
+from users.models import UserProfile, Friendship
+from users.serializers import FriendshipSerializer, UserSerializer
 from users.throttling import FriendRequestRateThrottle
+from rest_framework.decorators import action
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -27,21 +28,6 @@ class UserViewSet(viewsets.ModelViewSet):
         return queryset
 
 
-class FriendRequestViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows friend requests to be viewed or edited.
-    """
-    queryset = FriendRequest.objects.all().order_by('-created_at')
-    serializer_class = FriendRequestSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    throttle_classes = [FriendRequestRateThrottle]
-
-    def get_queryset(self):
-        status = self.request.query_params.get('status')
-        queryset = self.queryset.filter(status=status)
-        return queryset
-
-
 class FriendshipViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows list friends.
@@ -49,6 +35,51 @@ class FriendshipViewSet(viewsets.ModelViewSet):
     queryset = Friendship.objects.all().order_by('-created_at')
     serializer_class = FriendshipSerializer
     permission_classes = [permissions.IsAuthenticated]
+    throttle_classes = [FriendRequestRateThrottle]
+    lookup_field = 'pk'
+
+    def get_queryset(self):
+        # list of users who have accepted friend request
+        queryset = self.queryset.filter(user=self.request.user.id)
+        status = self.request.query_params.get('status')
+        if status:
+            queryset = queryset.filter(status=status)
+        return queryset
+
+    def get_throttles(self):
+        """
+        Override the default throttles to exclude them for accept and reject actions.
+        """
+        if self.action in ['accept', 'reject']:
+            return []  # No throttles for accept and reject actions
+        return super().get_throttles()
+    
+    @action(detail=True, methods=['PUT'])
+    def accept(self, request, pk=None):
+        friendship = self.get_object()
+        if friendship.status == 'A':
+            return Response({
+                'error': 'Friend request already accepted.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        friendship.status = 'A'
+        friendship.save()
+        return Response({
+            'message': 'Friend request accepted successfully.'
+        }, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['PUT'])
+    def reject(self, request, pk=None):
+        friendship = self.get_object()
+        if friendship.status == 'R':
+            return Response({
+                'error': 'Friend request already rejected.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        friendship.status = 'R'
+        friendship.save()
+        return Response({
+            'message': 'Friend request rejected successfully.'
+        }, status=status.HTTP_200_OK)
+
 
 class SignupView(APIView):
 

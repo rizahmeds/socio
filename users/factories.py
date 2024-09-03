@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from datetime import datetime, timedelta
 from django.utils import timezone
 
-from users.models import UserProfile, Friendship, FriendRequest
+from users.models import UserProfile, Friendship
 
 User = get_user_model()
 
@@ -46,26 +46,6 @@ class UserProfileFactory(DjangoModelFactory):
         This method is kept for backwards compatibility with existing tests.
         """
         pass
-    
-
-class FriendRequestFactory(DjangoModelFactory):
-    class Meta:
-        model = FriendRequest
-
-    from_user = SubFactory(UserProfileFactory)
-    to_user = SubFactory(UserProfileFactory)
-    status = FriendRequest.PENDING
-    created_at = factory.LazyFunction(timezone.now)
-    updated_at = factory.LazyFunction(timezone.now)
-
-    @classmethod
-    def _create(cls, model_class, *args, **kwargs):
-        """Override to ensure from_user and to_user are different"""
-        obj = super()._create(model_class, *args, **kwargs)
-        while obj.from_user == obj.to_user:
-            obj.to_user = UserProfileFactory()
-        obj.save()
-        return obj
 
 
 class FriendshipFactory(DjangoModelFactory):
