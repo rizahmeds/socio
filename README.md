@@ -34,14 +34,16 @@ python manage.py migrate
 ```
 python manage.py createsuperuser
 ```
-6. Run the development server:
+6. Load database with dummy users using management command:
+```
+python manage.py populate_users
+```
+7. Run the development server:
 ```
 python manage.py runserver
 ```
 
 The application should now be running at http://127.0.0.1:8000/.
-
-# Usage
 
 ## API Endpoints
 
@@ -57,6 +59,8 @@ The application should now be running at http://127.0.0.1:8000/.
 | `GET`    | `/api/friends/?status=P`                 | List pending friend requests.            |
 | `GET`    | `/api/friends/?status=R`                 | List rejected friend requests.           |
 
-
+# Usage
+- Upon `singup` with `email` and `password`, user will get `token`, `user_id` in return. Except `signup` and `login` every api should be called for authenticated users only.
+- Returned `token` should be set in `Header` of subsequent requests i.e `Authorization Token {token}`
 
 
