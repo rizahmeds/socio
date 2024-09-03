@@ -45,8 +45,18 @@ The application should now be running at http://127.0.0.1:8000/.
 
 ## API Endpoints
 
-| Command | Description |
-| --- | --- |
-| `git status` | List all *new or modified* files |
-| `git diff` | Show file differences that **haven't been** staged |
+| Method   | URL                                      | Description                              |
+| -------- | ---------------------------------------- | ---------------------------------------- |
+| `POST`   | `/api/signup/`                           | Signup a user.                           |
+| `POST`   | `/api/login/`                            | Login a user.                            |
+| `GET`    | `/api/users/?search={email/name}?page=2` | Search other users by email and name.    |
+| `POST`   | `/api/friends/`                          | Send friend request.                     |
+| `PATCH`  | `/api/friends/{id}/accept/`              | Accept friend request.                   |
+| `PATCH`  | `/api/friends/{id}/reject/`              | Reject friend request.                   |
+| `GET`    | `/api/friends/?status=A`                 | List accepted friend requests.           |
+| `GET`    | `/api/friends/?status=P`                 | List pending friend requests.            |
+| `GET`    | `/api/friends/?status=R`                 | List rejected friend requests.           |
+
+
+
 
