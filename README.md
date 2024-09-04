@@ -67,7 +67,8 @@ docker compose up
 
 # Usage
 - Upon `singup` with `email` and `password`, user will get `token`, `user_id` in return. Except `signup` and `login` every api should be called for authenticated users only.
-- Returned `token` should be set in `Header` of subsequent requests i.e `Authorization Token {token}`
+- Returned `token` should be set in `Header` of subsequent requests i.e `Authorization Token {token}`.
+- Send a friend request using `/api/friends/` API and sending form-data with `user_id` and `friend` IDs. Make sure `Authorization Token {token}` set in the Header of the request.  
 
 # Socio Postman Collection
 Explore Postman collections for a hands-on, practical approach to using our APIs. These provide an interactive way to explore and test Socio APIs. They are designed to help you quickly get started.
